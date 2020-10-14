@@ -1,12 +1,14 @@
 class Game {
   constructor(p1, p2, height = 6, width = 7) {
+    this.makeBoard();
+    this.makeHtmlBoard();
     this.players = [p1, p2];
     this.height = height;
     this.width = width;
     this.currPlayer = p1;
-    this.makeBoard();
-    this.makeHtmlBoard();
     this.gameOver = false;
+
+    console.log('in ze constructor');
   }
 
   makeBoard() {
@@ -14,17 +16,19 @@ class Game {
     for (let y = 0; y < this.height; y++) {
       this.board.push(Array.from({ length: this.width }));
     }
+    console.log('making dat board');
   }
 
   makeHtmlBoard() {
     const board = document.getElementById('board');
     board.innerHTML = '';
+    console.log('get da board');
 
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
+    console.log('set top columns');
 
     this.handleGameClick = this.handleClick.bind(this);
-
     top.addEventListener('click', this.handleGameClick);
 
     for (let x = 0; x < this.width; x++) {
@@ -32,8 +36,8 @@ class Game {
       headCell.setAttribute('id', x);
       top.append(headCell);
     }
-
     board.append(top);
+    console.log('stored reference to handClick');
 
     for (let y = 0; y < this.height; y++) {
       const row = document.createElement('tr');
@@ -43,8 +47,8 @@ class Game {
         cell.setAttribute('id', `${y}-${x}`);
         row.append(cell);
       }
-
       board.append(row);
+      console.log('made base gameboard');
     }
   }
 
@@ -66,22 +70,18 @@ class Game {
     const spot = document.getElementById(`${y}-${x}`);
     spot.append(piece);
   }
-
   endGame(msg) {
-    alert(msg);
+    window.alert(msg);
     const top = document.querySelector('#column-top');
     top.removeEventListener('click', this.handleGameClick);
   }
 
   handleClick(evt) {
     const x = +evt.target.id;
-
     const y = this.findSpotForCol(x);
     if (y === null) {
       return;
     }
-
-    // place piece in board and add to HTML table
     this.board[y][x] = this.currPlayer;
     this.placeInTable(y, x);
 
@@ -93,7 +93,6 @@ class Game {
       this.gameOver = true;
       return this.endGame(`The ${this.currPlayer.color} player won!`);
     }
-
     this.currPlayer =
       this.currPlayer === this.players[0] ? this.players[1] : this.players[0];
   }
